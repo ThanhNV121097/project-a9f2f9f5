@@ -1,0 +1,15 @@
+.screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6);
+}
+
+.greeting {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--text-hero);
+  line-height: var(--text-hero-line-height);
+  font-weight: var(--text-hero-weight);
+  text-align: center;
+}
