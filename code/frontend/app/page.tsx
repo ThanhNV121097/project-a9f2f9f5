@@ -1,6 +1,21 @@
 import { GreetingScreen } from "../components/GreetingScreen";
-import { greetingMock } from "../lib/mock/store-greeting-in-db";
 
-export default function Home() {
-  return <GreetingScreen greeting={greetingMock.greeting} />;
+const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "/api";
+
+async function getGreeting() {
+  const response = await fetch(`${apiBase}/v1/greeting`, {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error("failed to load greeting");
+  }
+
+  return (await response.json()) as { greeting: string };
+}
+
+export default async function Home() {
+  const { greeting } = await getGreeting();
+
+  return <GreetingScreen greeting={greeting} />;
 }
