@@ -73,6 +73,11 @@ func (s *server) healthz(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *server) greeting(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet || r.URL.RawQuery != "" || r.ContentLength > 0 {
+		writeError(w, http.StatusBadRequest, "bad_request")
+		return
+	}
+
 	ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
 	defer cancel()
 
