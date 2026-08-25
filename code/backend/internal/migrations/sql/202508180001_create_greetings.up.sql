@@ -1,0 +1,15 @@
+CREATE TABLE IF NOT EXISTS schema_migrations (
+  version text PRIMARY KEY,
+  applied_at timestamptz NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS greetings (
+  id integer PRIMARY KEY,
+  text text NOT NULL CHECK (length(btrim(text)) > 0),
+  updated_at timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT greetings_single_row CHECK (id = 1)
+);
+
+INSERT INTO greetings (id, text)
+VALUES (1, 'Hello Word')
+ON CONFLICT (id) DO NOTHING;
