@@ -65,7 +65,9 @@ func port() string {
 func (s *server) healthz(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
 	defer cancel()
-	if err := s.db.Ping(ctx); err != nil {
+
+	var one int
+	if err := s.db.QueryRow(ctx, "SELECT 1").Scan(&one); err != nil {
 		writeError(w, http.StatusServiceUnavailable, "service_unavailable")
 		return
 	}
@@ -73,6 +75,11 @@ func (s *server) healthz(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *server) greeting(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		writeError(w, http.StatusMethodNotAllowed, "internal_error")
+		return
+	}
+
 	ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
 	defer cancel()
 
