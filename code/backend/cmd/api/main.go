@@ -65,7 +65,9 @@ func port() string {
 func (s *server) healthz(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
 	defer cancel()
-	if err := s.db.Ping(ctx); err != nil {
+
+	var one int
+	if err := s.db.QueryRow(ctx, "SELECT 1").Scan(&one); err != nil {
 		writeError(w, http.StatusServiceUnavailable, "service_unavailable")
 		return
 	}
